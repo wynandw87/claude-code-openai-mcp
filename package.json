@@ -1,0 +1,58 @@
+{
+  "name": "openai-mcp-server",
+  "version": "1.0.0",
+  "description": "OpenAI MCP server providing AI assistance, web search, reasoning, code execution, image generation/editing/analysis, text-to-speech, and transcription for Claude Code",
+  "main": "dist/index.js",
+  "bin": {
+    "openai-mcp-server": "dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prepare": "npm run build",
+    "postinstall": "node scripts/postinstall.js",
+    "install:claude": "node scripts/install-claude-code.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "openai",
+    "gpt",
+    "ai",
+    "claude-code",
+    "llm",
+    "brainstorming",
+    "code-review",
+    "ai-assistant"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wynandw87/claude-code-openai-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wynandw87/claude-code-openai-mcp/issues"
+  },
+  "homepage": "https://github.com/wynandw87/claude-code-openai-mcp#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "openai": "^4.80.0",
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
