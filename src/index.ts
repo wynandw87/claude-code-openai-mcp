@@ -204,7 +204,7 @@ async function main() {
           },
           {
             name: 'upload_file',
-            description: "Upload a document for OpenAI to analyze. Supports: txt, md, py, js, csv, json, pdf, and more (max 512MB). Optionally ask a question about it immediately. Trigger: 'openai upload file', 'upload to openai'.",
+            description: "Upload a document for OpenAI to analyze. Supports any text-based file: txt, md, py, js, ts, csv, json, pdf, go, rs, and more. Files with unsupported extensions are read inline as text. Trigger: 'openai upload file', 'upload to openai'.",
             inputSchema: {
               type: 'object',
               properties: {

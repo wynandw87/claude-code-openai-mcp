@@ -110,7 +110,7 @@ You should see `OpenAI` listed with a Connected status.
 
 ### Code & Files
 - **Code Execution** (`run_code`) - Server-side Python execution with NumPy, Pandas, Matplotlib, SciPy
-- **File Upload** (`upload_file`) - Upload documents (PDF, CSV, code, etc.) for analysis
+- **File Upload** (`upload_file`) - Upload documents for analysis (any text-based file; PDF, CSV, code, etc.)
 
 ### Images
 - **Image Generation** (`generate_image`) - Text-to-image using gpt-image-1
@@ -231,7 +231,9 @@ Fetch and analyze web page content.
 
 ### upload_file
 
-Upload a document for analysis. Supports PDF, txt, md, py, js, csv, json, and more.
+Upload a document for analysis. Supports most text-based file formats.
+
+Files with natively supported extensions (`.c`, `.css`, `.csv`, `.html`, `.java`, `.js`, `.json`, `.md`, `.pdf`, `.py`, `.sh`, `.txt`, `.xml`, `.yaml`, etc.) are uploaded via the OpenAI Files API. Other text-based files (`.ts`, `.tsx`, `.go`, `.rs`, `.swift`, `.kt`, `.sql`, `.toml`, etc.) are read and passed inline as text — no format restrictions for code files.
 
 **Parameters:**
 - `file_path` (string, required) - Absolute path to the file to upload
@@ -357,7 +359,7 @@ This MCP server uses the official `openai` npm package to communicate with OpenA
 | `search_with_reasoning` | Responses + reasoning | `o4-mini` |
 | `run_code` | Responses + code_interpreter | Configurable (`gpt-4.1`) |
 | `fetch_url` | Responses + web_search | Configurable (`gpt-4.1`) |
-| `upload_file` | Files API + Responses | Configurable (`gpt-4.1`) |
+| `upload_file` | Files API + Responses (inline fallback) | Configurable (`gpt-4.1`) |
 | `generate_image` | Images API | `gpt-image-1` |
 | `edit_image` | Images Edit API | `gpt-image-1` |
 | `analyze_image` | Responses (vision) | Configurable (`gpt-4.1`) |

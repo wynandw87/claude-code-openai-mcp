@@ -1,7 +1,7 @@
 import OpenAI from 'openai';
 import * as fs from 'fs';
 import * as path from 'path';
-import { Config, REASONING_MODELS } from './config.js';
+import { Config } from './config.js';
 
 export interface SearchWebResponse {
   text: string;
@@ -184,6 +184,14 @@ export class OpenAIClient {
     }
   }
 
+  // Extensions supported by OpenAI Files API (purpose: 'assistants')
+  private static UPLOAD_SUPPORTED_EXTENSIONS = new Set([
+    '.c', '.css', '.csv', '.diff', '.html', '.htm', '.java', '.js', '.json',
+    '.md', '.markdown', '.pdf', '.php', '.pl', '.pm', '.py', '.rb', '.rst',
+    '.scala', '.sh', '.tex', '.txt', '.text', '.xml', '.yaml', '.yml',
+    '.srt', '.vtt', '.eml', '.mjs', '.patch',
+  ]);
+
   async uploadFile(
     model: string,
     filePath: string,
@@ -192,46 +200,90 @@ export class OpenAIClient {
     try {
       const absolutePath = path.resolve(filePath);
       const fileName = path.basename(absolutePath);
+      const ext = path.extname(absolutePath).toLowerCase();
 
-      const file = await this.client.files.create({
-        file: fs.createReadStream(absolutePath),
-        purpose: 'assistants'
-      });
-
-      if (!query) {
-        return {
-          text: `File '${fileName}' uploaded successfully.\nFile ID: ${file.id}\n\nUse this file_id with the 'ask' tool's file_ids parameter to ask questions about it.`,
-          fileName,
-          fileId: file.id
-        };
+      // Check if the file type is supported by OpenAI Files API
+      if (OpenAIClient.UPLOAD_SUPPORTED_EXTENSIONS.has(ext)) {
+        return this.uploadViaFilesApi(model, absolutePath, fileName, query);
       }
 
-      const input: OpenAI.Responses.ResponseCreateParams['input'] = [
-        {
-          role: 'user',
-          content: [
-            { type: 'input_file', file_id: file.id },
-            { type: 'input_text', text: query }
-          ]
-        }
-      ];
-
-      const response = await Promise.race([
-        this.client.responses.create({
-          model,
-          input
-        }),
-        this.timeoutPromise(this.timeout * 3)
-      ]);
-
-      return {
-        text: this.extractText(response),
-        fileName,
-        fileId: file.id
-      };
+      // Fallback: read as text and pass inline for unsupported extensions
+      // (e.g. .ts, .tsx, .go, .rs, .swift, .kt, .toml, .ini, .sql, etc.)
+      return this.uploadViaInlineText(model, absolutePath, fileName, query);
     } catch (error: any) {
       throw this.handleError(error);
     }
+  }
+
+  private async uploadViaFilesApi(
+    model: string,
+    absolutePath: string,
+    fileName: string,
+    query?: string
+  ): Promise<FileUploadResponse> {
+    const file = await this.client.files.create({
+      file: fs.createReadStream(absolutePath),
+      purpose: 'assistants'
+    });
+
+    if (!query) {
+      return {
+        text: `File '${fileName}' uploaded successfully.\nFile ID: ${file.id}\n\nUse this file_id with the 'ask' tool's file_ids parameter to ask questions about it.`,
+        fileName,
+        fileId: file.id
+      };
+    }
+
+    const input: OpenAI.Responses.ResponseCreateParams['input'] = [
+      {
+        role: 'user',
+        content: [
+          { type: 'input_file', file_id: file.id },
+          { type: 'input_text', text: query }
+        ]
+      }
+    ];
+
+    const response = await Promise.race([
+      this.client.responses.create({
+        model,
+        input
+      }),
+      this.timeoutPromise(this.timeout * 3)
+    ]);
+
+    return {
+      text: this.extractText(response),
+      fileName,
+      fileId: file.id
+    };
+  }
+
+  private async uploadViaInlineText(
+    model: string,
+    absolutePath: string,
+    fileName: string,
+    query?: string
+  ): Promise<FileUploadResponse> {
+    const fileContent = fs.readFileSync(absolutePath, 'utf-8');
+    const ext = path.extname(absolutePath).toLowerCase().slice(1) || 'text';
+    const promptText = query || 'Analyze this file and provide a detailed summary.';
+
+    const fullPrompt = `File: ${fileName}\n\n\`\`\`${ext}\n${fileContent}\n\`\`\`\n\n${promptText}`;
+
+    const response = await Promise.race([
+      this.client.responses.create({
+        model,
+        input: [{ role: 'user', content: fullPrompt }]
+      }),
+      this.timeoutPromise(this.timeout * 3)
+    ]);
+
+    return {
+      text: this.extractText(response),
+      fileName,
+      fileId: 'inline'
+    };
   }
 
   async generateImage(
@@ -283,17 +335,27 @@ export class OpenAIClient {
     }
   ): Promise<ImageGenerationResponse> {
     try {
+      const resolvedPath = path.resolve(imagePath);
+      const imageBuffer = fs.readFileSync(resolvedPath);
+      const mimeType = this.getImageMimeType(resolvedPath);
+      const fileName = path.basename(resolvedPath);
+      const imageFile = new File([imageBuffer], fileName, { type: mimeType });
+
       const params: any = {
         model: 'gpt-image-1',
         prompt,
-        image: [fs.createReadStream(path.resolve(imagePath))],
+        image: imageFile,
         size: options?.size || 'auto',
         quality: options?.quality || 'auto',
         output_format: 'png'
       };
 
       if (options?.maskPath) {
-        params.mask = fs.createReadStream(path.resolve(options.maskPath));
+        const maskResolved = path.resolve(options.maskPath);
+        const maskBuffer = fs.readFileSync(maskResolved);
+        const maskMime = this.getImageMimeType(maskResolved);
+        const maskName = path.basename(maskResolved);
+        params.mask = new File([maskBuffer], maskName, { type: maskMime });
       }
 
       const response = await Promise.race([
@@ -523,6 +585,19 @@ export class OpenAIClient {
       text: searchResp.text,
       citations: searchResp.citations
     };
+  }
+
+  private getImageMimeType(filePath: string): string {
+    const ext = path.extname(filePath).toLowerCase();
+    const mimeTypes: Record<string, string> = {
+      '.png': 'image/png',
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.webp': 'image/webp',
+      '.gif': 'image/gif',
+      '.bmp': 'image/bmp'
+    };
+    return mimeTypes[ext] || 'image/png';
   }
 
   private timeoutPromise(ms: number): Promise<never> {
