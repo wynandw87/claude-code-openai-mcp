@@ -313,8 +313,8 @@ Transcribe audio to text.
 ### Coding Models
 | Model | Best For |
 |-------|----------|
-| `gpt-5.3-codex` | Latest — best code generation |
-| `gpt-5.2-codex` | Default for code review |
+| `gpt-5.3-codex` | Latest — API rollout pending |
+| `gpt-5.2-codex` | Default for code review — best available |
 | `gpt-5.1-codex` | Stable code generation |
 | `gpt-5-codex` | First-gen GPT-5 coding |
 
@@ -366,7 +366,7 @@ This MCP server uses the official `openai` npm package to communicate with OpenA
 |------|-------------|---------------|
 | `ask` | Responses API | Configurable (`gpt-5.2`) |
 | `brainstorm` | Responses API | `gpt-5.2` |
-| `code_review` | Responses API | `gpt-5.3-codex` |
+| `code_review` | Responses API | `gpt-5.2-codex` |
 | `explain` | Responses API | `gpt-5-mini` |
 | `search_web` | Responses + web_search | Configurable (`gpt-5.2`) |
 | `search_with_reasoning` | Responses + reasoning | `o4-mini` |

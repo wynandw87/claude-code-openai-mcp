@@ -455,7 +455,7 @@ async function main() {
             const input = schema.parse(args);
             const focus = input.focus || 'general';
             const prompt = `Please review this code with a focus on ${focus}:\n\n\`\`\`\n${input.code}\n\`\`\`\n\nProvide specific, actionable feedback on:\n1. Potential issues or bugs\n2. Security concerns\n3. Performance optimizations\n4. Best practices\n5. Code clarity and maintainability`;
-            const response = await client.generate('gpt-5.3-codex', prompt, CODE_REVIEW_PROMPT);
+            const response = await client.generate('gpt-5.2-codex', prompt, CODE_REVIEW_PROMPT);
             return {
               content: [{ type: 'text', text: response }]
             };
