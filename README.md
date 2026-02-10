@@ -1,6 +1,6 @@
 # OpenAI MCP Server
 
-MCP server that brings OpenAI to Claude Code — text generation, brainstorming, code review, explanations, web search, reasoning, code execution, URL fetching, image generation/editing/analysis, text-to-speech, and transcription. Supports GPT-4.1, o4-mini, gpt-image-1, and Whisper models.
+MCP server that brings OpenAI to Claude Code — text generation, brainstorming, code review, explanations, web search, reasoning, code execution, URL fetching, image generation/editing/analysis, text-to-speech, and transcription. Supports GPT-5.2, GPT-5.2-Codex, o4-mini, gpt-image-1.5, and Whisper models.
 
 ## Quick Start
 
@@ -101,7 +101,7 @@ You should see `OpenAI` listed with a Connected status.
 - **General Queries** (`ask`) - Flexible interface to query any supported OpenAI model
 - **Brainstorming** (`brainstorm`) - Creative ideation
 - **Code Review** (`code_review`) - Thorough code analysis
-- **Explanations** (`explain`) - Clear concept explanations using GPT-4.1-mini
+- **Explanations** (`explain`) - Clear concept explanations using GPT-5-mini
 - **Reasoning** (`search_with_reasoning`) - Extended reasoning with o4-mini/o3 models
 
 ### Search & Web
@@ -113,7 +113,7 @@ You should see `OpenAI` listed with a Connected status.
 - **File Upload** (`upload_file`) - Upload documents for analysis (any text-based file; PDF, CSV, code, etc.)
 
 ### Images
-- **Image Generation** (`generate_image`) - Text-to-image using gpt-image-1
+- **Image Generation** (`generate_image`) - Text-to-image using gpt-image-1.5
 - **Image Editing** (`edit_image`) - Edit existing images with natural language and optional mask
 - **Image Analysis** (`analyze_image`) - Vision model to describe and analyze images
 
@@ -167,7 +167,7 @@ Query any OpenAI model with a custom prompt.
 
 **Parameters:**
 - `prompt` (string, required) - The question or instruction
-- `model` (string, optional) - Model identifier (defaults to `gpt-4.1`)
+- `model` (string, optional) - Model identifier (defaults to `gpt-5.2`)
 - `file_ids` (string[], optional) - File IDs from previous uploads to include as context
 
 ### code_review
@@ -188,7 +188,7 @@ Get creative ideas and brainstorming assistance.
 
 ### explain
 
-Get clear explanations using GPT-4.1-mini.
+Get clear explanations using GPT-5-mini.
 
 **Parameters:**
 - `concept` (string, required) - What to explain
@@ -199,7 +199,7 @@ Search the web with real-time results and citations.
 
 **Parameters:**
 - `query` (string, required) - The search query or question
-- `model` (string, optional) - Model identifier (defaults to `gpt-4.1`)
+- `model` (string, optional) - Model identifier (defaults to `gpt-5.2`)
 
 ### search_with_reasoning
 
@@ -216,7 +216,7 @@ Execute Python code in OpenAI's sandboxed environment.
 
 **Parameters:**
 - `prompt` (string, required) - Description of what to compute or analyze
-- `model` (string, optional) - Model identifier (defaults to `gpt-4.1`)
+- `model` (string, optional) - Model identifier (defaults to `gpt-5.2`)
 
 **Environment:** Python with NumPy, Pandas, Matplotlib, SciPy pre-installed.
 
@@ -227,7 +227,7 @@ Fetch and analyze web page content.
 **Parameters:**
 - `prompt` (string, required) - Question or instruction about the URL content
 - `urls` (string[], required) - URLs to fetch and analyze (max 20)
-- `model` (string, optional) - Model identifier (defaults to `gpt-4.1`)
+- `model` (string, optional) - Model identifier (defaults to `gpt-5.2`)
 
 ### upload_file
 
@@ -238,11 +238,11 @@ Files with natively supported extensions (`.c`, `.css`, `.csv`, `.html`, `.java`
 **Parameters:**
 - `file_path` (string, required) - Absolute path to the file to upload
 - `query` (string, optional) - Question to ask about the file immediately after upload
-- `model` (string, optional) - Model identifier (defaults to `gpt-4.1`)
+- `model` (string, optional) - Model identifier (defaults to `gpt-5.2`)
 
 ### generate_image
 
-Generate images using gpt-image-1. Returns the image inline and saves to disk.
+Generate images using gpt-image-1.5. Returns the image inline and saves to disk.
 
 **Parameters:**
 - `prompt` (string, required) - Image generation prompt
@@ -270,7 +270,7 @@ Analyze an image using OpenAI's vision capabilities.
 **Parameters:**
 - `image_path` (string, required) - Absolute path to the image file
 - `prompt` (string, optional) - Question about the image (default: "Describe this image in detail")
-- `model` (string, optional) - Model identifier (defaults to `gpt-4.1`)
+- `model` (string, optional) - Model identifier (defaults to `gpt-5.2`)
 
 ### text_to_speech
 
@@ -301,23 +301,36 @@ Transcribe audio to text.
 ### Text Models
 | Model | Best For |
 |-------|----------|
-| `gpt-4.1` | Default — high quality, fast |
-| `gpt-4.1-mini` | Cost-effective, good quality |
-| `gpt-4.1-nano` | Fastest, lowest cost |
+| `gpt-5.2` | Default — flagship, highest quality |
+| `gpt-5-mini` | Cost-effective, good quality |
+| `gpt-5-nano` | Fastest, lowest cost |
+| `gpt-4.1` | High quality, fast |
+| `gpt-4.1-mini` | Cost-effective legacy |
+| `gpt-4.1-nano` | Fastest legacy |
 | `gpt-4o` | Multimodal, fast |
 | `gpt-4o-mini` | Compact multimodal |
+
+### Coding Models
+| Model | Best For |
+|-------|----------|
+| `gpt-5.3-codex` | Latest — best code generation |
+| `gpt-5.2-codex` | Default for code review |
+| `gpt-5.1-codex` | Stable code generation |
+| `gpt-5-codex` | First-gen GPT-5 coding |
 
 ### Reasoning Models
 | Model | Best For |
 |-------|----------|
 | `o4-mini` | Default reasoning — fast, cost-effective |
 | `o3` | Maximum reasoning quality |
+| `o3-pro` | Premium reasoning |
 | `o3-mini` | Compact reasoning |
 
 ### Image Models
 | Model | Best For |
 |-------|----------|
-| `gpt-image-1` | Image generation and editing |
+| `gpt-image-1.5` | Default — latest image generation and editing |
+| `gpt-image-1` | Previous generation |
 
 ### Audio Models
 | Model | Best For |
@@ -338,7 +351,7 @@ Transcribe audio to text.
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `OPENAI_API_KEY` | Yes | — | OpenAI API key |
-| `OPENAI_DEFAULT_MODEL` | No | `gpt-4.1` | Default model for text tools |
+| `OPENAI_DEFAULT_MODEL` | No | `gpt-5.2` | Default model for text tools |
 | `OPENAI_TIMEOUT` | No | `60000` | API timeout in ms |
 | `OPENAI_OUTPUT_DIR` | No | `./generated-media` | Directory for auto-saved images and audio |
 
@@ -351,18 +364,18 @@ This MCP server uses the official `openai` npm package to communicate with OpenA
 **Tools provided:**
 | Tool | API Feature | Default Model |
 |------|-------------|---------------|
-| `ask` | Responses API | Configurable (`gpt-4.1`) |
-| `brainstorm` | Responses API | Configurable (`gpt-4.1`) |
-| `code_review` | Responses API | Configurable (`gpt-4.1`) |
-| `explain` | Responses API | `gpt-4.1-mini` |
-| `search_web` | Responses + web_search | Configurable (`gpt-4.1`) |
+| `ask` | Responses API | Configurable (`gpt-5.2`) |
+| `brainstorm` | Responses API | `gpt-5.2` |
+| `code_review` | Responses API | `gpt-5.3-codex` |
+| `explain` | Responses API | `gpt-5-mini` |
+| `search_web` | Responses + web_search | Configurable (`gpt-5.2`) |
 | `search_with_reasoning` | Responses + reasoning | `o4-mini` |
-| `run_code` | Responses + code_interpreter | Configurable (`gpt-4.1`) |
-| `fetch_url` | Responses + web_search | Configurable (`gpt-4.1`) |
-| `upload_file` | Files API + Responses (inline fallback) | Configurable (`gpt-4.1`) |
-| `generate_image` | Images API | `gpt-image-1` |
-| `edit_image` | Images Edit API | `gpt-image-1` |
-| `analyze_image` | Responses (vision) | Configurable (`gpt-4.1`) |
+| `run_code` | Responses + code_interpreter | Configurable (`gpt-5.2`) |
+| `fetch_url` | Responses + web_search | Configurable (`gpt-5.2`) |
+| `upload_file` | Files API + Responses (inline fallback) | Configurable (`gpt-5.2`) |
+| `generate_image` | Images API | `gpt-image-1.5` |
+| `edit_image` | Images Edit API | `gpt-image-1.5` |
+| `analyze_image` | Responses (vision) | Configurable (`gpt-5.2`) |
 | `text_to_speech` | Audio Speech API | `gpt-4o-mini-tts` |
 | `transcribe` | Audio Transcriptions | `whisper-1` |
 

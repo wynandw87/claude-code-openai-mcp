@@ -6,17 +6,28 @@ export interface Config {
 }
 
 export const TEXT_MODELS = [
+  // GPT-5 series
+  'gpt-5.2',
+  'gpt-5-mini',
+  'gpt-5-nano',
+  // GPT-4.1 series
   'gpt-4.1',
   'gpt-4.1-mini',
   'gpt-4.1-nano',
+  // Older
   'gpt-4o',
   'gpt-4o-mini',
-  'o4-mini',
-  'o3',
-  'o3-mini',
+] as const;
+
+export const CODING_MODELS = [
+  'gpt-5.3-codex',
+  'gpt-5.2-codex',
+  'gpt-5.1-codex',
+  'gpt-5-codex',
 ] as const;
 
 export const IMAGE_MODELS = [
+  'gpt-image-1.5',
   'gpt-image-1',
 ] as const;
 
@@ -35,6 +46,7 @@ export const TRANSCRIPTION_MODELS = [
 export const REASONING_MODELS = [
   'o4-mini',
   'o3',
+  'o3-pro',
   'o3-mini',
 ] as const;
 
@@ -46,7 +58,7 @@ export function loadConfig(): Config {
     );
   }
 
-  const defaultModel = process.env.OPENAI_DEFAULT_MODEL || 'gpt-4.1';
+  const defaultModel = process.env.OPENAI_DEFAULT_MODEL || 'gpt-5.2';
   const outputDir = process.env.OPENAI_OUTPUT_DIR || './generated-media';
 
   const timeoutStr = process.env.OPENAI_TIMEOUT;

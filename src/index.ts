@@ -50,7 +50,7 @@ async function main() {
                 },
                 model: {
                   type: 'string',
-                  description: 'Model identifier (optional, defaults to gpt-4.1)'
+                  description: 'Model identifier (optional, defaults to gpt-5.2)'
                 },
                 file_ids: {
                   type: 'array',
@@ -63,7 +63,7 @@ async function main() {
           },
           {
             name: 'code_review',
-            description: "Have OpenAI review code and return feedback directly to Claude. Trigger: 'openai review', 'openai code review', or 'have openai review'.",
+            description: "Have OpenAI review code and return feedback directly to Claude using GPT-5.2-Codex for expert-level analysis. Trigger: 'openai review', 'openai code review', or 'have openai review'.",
             inputSchema: {
               type: 'object',
               properties: {
@@ -83,7 +83,7 @@ async function main() {
           },
           {
             name: 'brainstorm',
-            description: "Brainstorm solutions with OpenAI, response visible to Claude. Trigger: 'openai brainstorm', 'brainstorm with openai', or 'openai ideas'.",
+            description: "Brainstorm solutions with OpenAI using GPT-5.2 for cutting-edge creativity. Trigger: 'openai brainstorm', 'brainstorm with openai', or 'openai ideas'.",
             inputSchema: {
               type: 'object',
               properties: {
@@ -104,7 +104,7 @@ async function main() {
           },
           {
             name: 'explain',
-            description: "Clear explanations of concepts, code, or technical topics using OpenAI. Trigger: 'openai explain'.",
+            description: "Clear explanations of concepts, code, or technical topics using GPT-5 mini for fast, modern explanations. Trigger: 'openai explain'.",
             inputSchema: {
               type: 'object',
               properties: {
@@ -129,7 +129,7 @@ async function main() {
                 },
                 model: {
                   type: 'string',
-                  description: 'Model identifier (optional, defaults to gpt-4.1)'
+                  description: 'Model identifier (optional, defaults to gpt-5.2)'
                 }
               },
               required: ['query']
@@ -172,7 +172,7 @@ async function main() {
                 },
                 model: {
                   type: 'string',
-                  description: 'Model identifier (optional, defaults to gpt-4.1)'
+                  description: 'Model identifier (optional, defaults to gpt-5.2)'
                 }
               },
               required: ['prompt']
@@ -196,7 +196,7 @@ async function main() {
                 },
                 model: {
                   type: 'string',
-                  description: 'Model identifier (optional, defaults to gpt-4.1)'
+                  description: 'Model identifier (optional, defaults to gpt-5.2)'
                 }
               },
               required: ['prompt', 'urls']
@@ -219,7 +219,7 @@ async function main() {
                 },
                 model: {
                   type: 'string',
-                  description: 'Model identifier (optional, defaults to gpt-4.1)'
+                  description: 'Model identifier (optional, defaults to gpt-5.2)'
                 }
               },
               required: ['file_path']
@@ -227,7 +227,7 @@ async function main() {
           },
           {
             name: 'generate_image',
-            description: "Generate images using OpenAI's gpt-image-1 model. Returns the image inline and saves to disk. Trigger: 'openai generate image', 'openai image', or 'openai create image'.",
+            description: "Generate images using OpenAI's gpt-image-1.5 model. Returns the image inline and saves to disk. Trigger: 'openai generate image', 'openai image', or 'openai create image'.",
             inputSchema: {
               type: 'object',
               properties: {
@@ -263,7 +263,7 @@ async function main() {
           },
           {
             name: 'edit_image',
-            description: "Edit an existing image using OpenAI's gpt-image-1 model. Provide a source image and edit instructions. Trigger: 'openai edit image'.",
+            description: "Edit an existing image using OpenAI's gpt-image-1.5 model. Provide a source image and edit instructions. Trigger: 'openai edit image'.",
             inputSchema: {
               type: 'object',
               properties: {
@@ -315,7 +315,7 @@ async function main() {
                 },
                 model: {
                   type: 'string',
-                  description: 'Model identifier (optional, defaults to gpt-4.1)'
+                  description: 'Model identifier (optional, defaults to gpt-5.2)'
                 }
               },
               required: ['image_path']
@@ -455,7 +455,7 @@ async function main() {
             const input = schema.parse(args);
             const focus = input.focus || 'general';
             const prompt = `Please review this code with a focus on ${focus}:\n\n\`\`\`\n${input.code}\n\`\`\`\n\nProvide specific, actionable feedback on:\n1. Potential issues or bugs\n2. Security concerns\n3. Performance optimizations\n4. Best practices\n5. Code clarity and maintainability`;
-            const response = await client.generate(config.defaultModel, prompt, CODE_REVIEW_PROMPT);
+            const response = await client.generate('gpt-5.3-codex', prompt, CODE_REVIEW_PROMPT);
             return {
               content: [{ type: 'text', text: response }]
             };
@@ -472,7 +472,7 @@ async function main() {
               prompt += `\n\nContext: ${input.context}`;
             }
             prompt += '\n\nProvide creative ideas, alternatives, and considerations.';
-            const response = await client.generate(config.defaultModel, prompt, BRAINSTORM_PROMPT);
+            const response = await client.generate('gpt-5.2', prompt, BRAINSTORM_PROMPT);
             return {
               content: [{ type: 'text', text: response }]
             };
@@ -484,7 +484,7 @@ async function main() {
             });
             const input = schema.parse(args);
             const prompt = `Explain: ${input.concept}`;
-            const response = await client.generate('gpt-4.1-mini', prompt, EXPLAIN_PROMPT);
+            const response = await client.generate('gpt-5-mini', prompt, EXPLAIN_PROMPT);
             return {
               content: [{ type: 'text', text: response }]
             };

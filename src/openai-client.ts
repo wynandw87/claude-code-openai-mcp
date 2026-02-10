@@ -297,7 +297,7 @@ export class OpenAIClient {
     try {
       const response = await Promise.race([
         this.client.images.generate({
-          model: 'gpt-image-1',
+          model: 'gpt-image-1.5',
           prompt,
           size: options?.size || 'auto',
           quality: options?.quality || 'auto',
@@ -342,7 +342,7 @@ export class OpenAIClient {
       const imageFile = new File([imageBuffer], fileName, { type: mimeType });
 
       const params: any = {
-        model: 'gpt-image-1',
+        model: 'gpt-image-1.5',
         prompt,
         image: imageFile,
         size: options?.size || 'auto',
