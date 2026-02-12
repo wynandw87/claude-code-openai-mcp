@@ -389,7 +389,6 @@ This MCP server uses the official `openai` npm package to communicate with OpenA
 ## Development
 
 ```text
-npm run dev      # Development mode with hot-reloading
 npm run build    # Build for production
 npm start        # Start production server
 ```
