@@ -57,7 +57,7 @@ claude mcp add -s user OpenAI -e OPENAI_API_KEY=YOUR_API_KEY -- node /full/path/
 
 **Windows:**
 ```text
-claude mcp add -s user OpenAI -e OPENAI_API_KEY=YOUR_API_KEY -- node C:\full\path\to\dist\index.js
+claude mcp add -s user OpenAI -e "OPENAI_API_KEY=YOUR_API_KEY" -- node "C:\full\path\to\dist\index.js"
 ```
 
 #### Alternative: Use Setup Scripts
